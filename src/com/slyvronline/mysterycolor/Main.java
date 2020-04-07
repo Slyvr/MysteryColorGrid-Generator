@@ -13,7 +13,8 @@ public class Main {
 		BufferedImage img = null;
 		try {
 		    img = ImageIO.read(new File("content/in/20200407.png"));
-		} catch (IOException e) {
+		}
+		catch (IOException e) {
 			e.printStackTrace();
 		}
 		int w = img.getWidth();
@@ -27,7 +28,7 @@ public class Main {
 		
 		for(int y=0; y<grid_h; y++) {
 			for (int x=0; x<grid_w; x++) {
-				short[] pixel = rgb.getRGB(x, y);
+				short[] pixel = rgb.getRGB(x*gridsize, y*gridsize);
 				short red = pixel[0];
 				short green = pixel[1];
 				short blue = pixel[2];
@@ -37,6 +38,20 @@ public class Main {
 			System.out.println();
 		}
 		
-		//System.out.println(rgb.getRGB(10, 10));
+		BufferedImage outImage = new BufferedImage(grid_w, grid_h, BufferedImage.TYPE_INT_RGB);
+		for(int y=0; y<grid_h; y++) {
+			for (int x=0; x<grid_w; x++) {
+				int pixel = rgb.getRGBInteger(x*gridsize, y*gridsize);
+				outImage.setRGB(x, y, pixel);
+			}
+		}
+		
+		File outFile = new File("content/out/20200407.png");
+		try {
+			ImageIO.write(outImage, "png", outFile);
+		}
+		catch(IOException e) {
+			e.printStackTrace();
+		}
 	}
 }
