@@ -48,7 +48,8 @@ public class Main {
 
 		FastRGB rgb = new FastRGB(img);
 
-		BufferedImage outImage = new BufferedImage(grid_w*GRID_OUT_SIZE, grid_h*GRID_OUT_SIZE, BufferedImage.TYPE_INT_RGB);
+		int colorNameTableWidth = 6;
+		BufferedImage outImage = new BufferedImage(grid_w*GRID_OUT_SIZE + (10+GRID_OUT_SIZE*colorNameTableWidth), grid_h*GRID_OUT_SIZE, BufferedImage.TYPE_INT_RGB);
 
 		for (int y = 0; y < grid_h; y++) {
 			for (int x = 0; x < grid_w; x++) {
@@ -79,6 +80,10 @@ public class Main {
 			}
 			//System.out.println();
 		}
+		
+		outImage.getGraphics().drawImage(getColorNameTable(GRID_OUT_SIZE*colorNameTableWidth, grid_h*GRID_OUT_SIZE), grid_w*GRID_OUT_SIZE, 0, null);
+		
+		
 
 		//outImage.getGraphics().drawImage(gridImg, 0, 0, null);
 		
@@ -275,13 +280,46 @@ public class Main {
             w, h, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g2d = img.createGraphics();
         g2d.drawImage(gridImg, 0, 0, w, h, null);
-        g2d.setPaint(Color.red);
-        g2d.setFont(new Font("Serif", Font.BOLD, 20));
+        g2d.setPaint(Color.LIGHT_GRAY);
+        g2d.setFont(new Font("Courier", Font.BOLD, 20));
         String s = ""+number;
         FontMetrics fm = g2d.getFontMetrics();
         int x = img.getWidth() - fm.stringWidth(s) - 5;
         int y = fm.getHeight();
         g2d.drawString(s, x, y);
+        g2d.dispose();
+        return img;
+    }
+    
+    private static BufferedImage getColorNameTable(int width, int height) {
+    	BufferedImage gridImg = null;
+		try {
+			gridImg = ImageIO.read(gridFile);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+    	
+        int w = width;
+        int h = height;
+        BufferedImage img = new BufferedImage(
+            w, h, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2d = img.createGraphics();
+        g2d.drawImage(gridImg, 0, 0, w, h, null);
+        g2d.setPaint(Color.black);
+        g2d.setFont(new Font("Courier", Font.BOLD, 20));
+        String s = "";
+        FontMetrics fm = g2d.getFontMetrics();
+        
+        for(int index=0; index<colorList.size(); index++) {
+        	ColorName c = colorList.get(index);
+        	s = index+" - "+c.getName();
+        	//int x = img.getWidth() - fm.stringWidth(s) - 5;
+            int x = 12;
+        	int y = fm.getHeight()+GRID_OUT_SIZE;
+        	g2d.drawString(s, x, y + (index*GRID_OUT_SIZE));
+        }
+        
+       
         g2d.dispose();
         return img;
     }
