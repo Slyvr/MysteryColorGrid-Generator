@@ -111,11 +111,11 @@ public class Main {
 //		colorList.add(new ColorName("Azure", 0xF0, 0xFF, 0xFF));
 //		colorList.add(new ColorName("Beige", 0xF5, 0xF5, 0xDC));
 //		colorList.add(new ColorName("Bisque", 0xFF, 0xE4, 0xC4));
-		colorList.add(new ColorName("Black", 0x00, 0x00, 0x00));
+//		colorList.add(new ColorName("Black", 0x00, 0x00, 0x00));
 //		colorList.add(new ColorName("BlanchedAlmond", 0xFF, 0xEB, 0xCD));
-		colorList.add(new ColorName("Blue", 0x00, 0x00, 0xFF));
+//		colorList.add(new ColorName("Blue", 0x00, 0x00, 0xFF));
 //		colorList.add(new ColorName("BlueViolet", 0x8A, 0x2B, 0xE2));
-		colorList.add(new ColorName("Brown", 0xA5, 0x2A, 0x2A));
+//		colorList.add(new ColorName("Brown", 0xA5, 0x2A, 0x2A));
 //		colorList.add(new ColorName("BurlyWood", 0xDE, 0xB8, 0x87));
 //		colorList.add(new ColorName("CadetBlue", 0x5F, 0x9E, 0xA0));
 //		colorList.add(new ColorName("Chartreuse", 0x7F, 0xFF, 0x00));
@@ -154,8 +154,8 @@ public class Main {
 //		colorList.add(new ColorName("GhostWhite", 0xF8, 0xF8, 0xFF));
 //		colorList.add(new ColorName("Gold", 0xFF, 0xD7, 0x00));
 //		colorList.add(new ColorName("GoldenRod", 0xDA, 0xA5, 0x20));
-		colorList.add(new ColorName("Gray", 0x80, 0x80, 0x80));
-		colorList.add(new ColorName("Green", 0x00, 0x80, 0x00));
+//		colorList.add(new ColorName("Gray", 0x80, 0x80, 0x80));
+//		colorList.add(new ColorName("Green", 0x00, 0x80, 0x00));
 //		colorList.add(new ColorName("GreenYellow", 0xAD, 0xFF, 0x2F));
 //		colorList.add(new ColorName("HoneyDew", 0xF0, 0xFF, 0xF0));
 //		colorList.add(new ColorName("HotPink", 0xFF, 0x69, 0xB4));
@@ -203,7 +203,7 @@ public class Main {
 //		colorList.add(new ColorName("OldLace", 0xFD, 0xF5, 0xE6));
 //		colorList.add(new ColorName("Olive", 0x80, 0x80, 0x00));
 //		colorList.add(new ColorName("OliveDrab", 0x6B, 0x8E, 0x23));
-		colorList.add(new ColorName("Orange", 0xFF, 0xA5, 0x00));
+//		colorList.add(new ColorName("Orange", 0xFF, 0xA5, 0x00));
 //		colorList.add(new ColorName("OrangeRed", 0xFF, 0x45, 0x00));
 //		colorList.add(new ColorName("Orchid", 0xDA, 0x70, 0xD6));
 //		colorList.add(new ColorName("PaleGoldenRod", 0xEE, 0xE8, 0xAA));
@@ -213,11 +213,11 @@ public class Main {
 //		colorList.add(new ColorName("PapayaWhip", 0xFF, 0xEF, 0xD5));
 //		colorList.add(new ColorName("PeachPuff", 0xFF, 0xDA, 0xB9));
 //		colorList.add(new ColorName("Peru", 0xCD, 0x85, 0x3F));
-		colorList.add(new ColorName("Pink", 0xFF, 0xC0, 0xCB));
+//		colorList.add(new ColorName("Pink", 0xFF, 0xC0, 0xCB));
 //		colorList.add(new ColorName("Plum", 0xDD, 0xA0, 0xDD));
 //		colorList.add(new ColorName("PowderBlue", 0xB0, 0xE0, 0xE6));
-		colorList.add(new ColorName("Purple", 0x80, 0x00, 0x80));
-		colorList.add(new ColorName("Red", 0xFF, 0x00, 0x00));
+//		colorList.add(new ColorName("Purple", 0x80, 0x00, 0x80));
+//		colorList.add(new ColorName("Red", 0xFF, 0x00, 0x00));
 //		colorList.add(new ColorName("RosyBrown", 0xBC, 0x8F, 0x8F));
 //		colorList.add(new ColorName("RoyalBlue", 0x41, 0x69, 0xE1));
 //		colorList.add(new ColorName("SaddleBrown", 0x8B, 0x45, 0x13));
@@ -240,10 +240,36 @@ public class Main {
 //		colorList.add(new ColorName("Turquoise", 0x40, 0xE0, 0xD0));
 //		colorList.add(new ColorName("Violet", 0xEE, 0x82, 0xEE));
 //		colorList.add(new ColorName("Wheat", 0xF5, 0xDE, 0xB3));
-		colorList.add(new ColorName("White", 0xFF, 0xFF, 0xFF));
+//		colorList.add(new ColorName("White", 0xFF, 0xFF, 0xFF));
 //		colorList.add(new ColorName("WhiteSmoke", 0xF5, 0xF5, 0xF5));
-		colorList.add(new ColorName("Yellow", 0xFF, 0xFF, 0x00));
+//		colorList.add(new ColorName("Yellow", 0xFF, 0xFF, 0x00));
 //		colorList.add(new ColorName("YellowGreen", 0x9A, 0xCD, 0x32));
+		
+		colorList.add(new ColorName("White", 0xFF, 0xFF, 0xFF));
+		colorList.add(new ColorName("Black", 0x00, 0x00, 0x00));
+		colorList.add(new ColorName("Gray", 0x80, 0x80, 0x80));
+		colorList.add(new ColorName("Tan", 0xD2, 0xB4, 0x8C));
+		colorList.add(new ColorName("Brown", 0xA5, 0x2A, 0x2A));
+		colorList.add(new ColorName("Red", 0xFF, 0x00, 0x00));
+		colorList.add(new ColorName("FireBrick", 0xB2, 0x22, 0x22));
+		colorList.add(new ColorName("Crimson", 0xDC, 0x14, 0x3C));
+		colorList.add(new ColorName("OrangeRed", 0xFF, 0x45, 0x00));
+		colorList.add(new ColorName("Orange", 0xFF, 0xA5, 0x00));
+		colorList.add(new ColorName("Yellow", 0xFF, 0xFF, 0x00));
+		colorList.add(new ColorName("Gold", 0xFF, 0xD7, 0x00));
+		colorList.add(new ColorName("Lime", 0x00, 0xFF, 0x00));
+		colorList.add(new ColorName("Green", 0x00, 0x80, 0x00));
+		colorList.add(new ColorName("Olive", 0x80, 0x80, 0x00));
+		colorList.add(new ColorName("SeaGreen", 0x2E, 0x8B, 0x57));
+		colorList.add(new ColorName("Blue", 0x00, 0x00, 0xFF));
+		colorList.add(new ColorName("PowderBlue", 0xB0, 0xE0, 0xE6));
+		colorList.add(new ColorName("Navy", 0x00, 0x00, 0x80));
+		colorList.add(new ColorName("Violet", 0xEE, 0x82, 0xEE));
+		colorList.add(new ColorName("Lavender", 0xE6, 0xE6, 0xFA));
+		colorList.add(new ColorName("Pink", 0xFF, 0xC0, 0xCB));
+		colorList.add(new ColorName("HotPink", 0xFF, 0x69, 0xB4));
+		colorList.add(new ColorName("Coral", 0xFF, 0x7F, 0x50));
+		
 		return colorList;
 	}
 	
@@ -267,7 +293,7 @@ public class Main {
     }
     
     private static BufferedImage getGridNumberedImage(int number) {
-    	BufferedImage gridImg = null;
+		BufferedImage gridImg = null;
 		try {
 			gridImg = ImageIO.read(gridFile);
 		} catch (IOException e) {
@@ -283,11 +309,13 @@ public class Main {
         g2d.setPaint(Color.LIGHT_GRAY);
         g2d.setFont(new Font("Courier", Font.BOLD, 20));
         String s = ""+number;
+        if (number == 0) s = "";
         FontMetrics fm = g2d.getFontMetrics();
         int x = img.getWidth() - fm.stringWidth(s) - 5;
         int y = fm.getHeight();
         g2d.drawString(s, x, y);
         g2d.dispose();
+        
         return img;
     }
     
@@ -306,7 +334,7 @@ public class Main {
         Graphics2D g2d = img.createGraphics();
         g2d.drawImage(gridImg, 0, 0, w, h, null);
         g2d.setPaint(Color.black);
-        g2d.setFont(new Font("Courier", Font.BOLD, 20));
+        g2d.setFont(new Font("Courier", Font.BOLD, 16));
         String s = "";
         FontMetrics fm = g2d.getFontMetrics();
         
@@ -316,7 +344,10 @@ public class Main {
         	//int x = img.getWidth() - fm.stringWidth(s) - 5;
             int x = 12;
         	int y = fm.getHeight()+GRID_OUT_SIZE;
-        	g2d.drawString(s, x, y + (index*GRID_OUT_SIZE));
+        	
+        	g2d.setPaint(new Color(c.getR(), c.getG(), c.getB()));
+        	
+        	g2d.drawString(s, x, y + (index*(GRID_OUT_SIZE/2)));
         }
         
        
