@@ -13,17 +13,20 @@ import javax.imageio.ImageIO;
 
 public class Main {
 
-	private static ArrayList<ColorDefinition> colors;
 	private static ArrayList<ColorName> colorList;
 	private static File inFile;
 	private static File outFile;
 	private static File gridFile;
-	private static String filename = "birb.png";
+	private static String infilename = "birb.png";
+	private static String outfilename = "birb_out.png";
 	
 	private static final int GRID_OUT_SIZE = 32;
 
 	public static void main(String[] args) {
 
+		infilename = args[0];
+		outfilename = args[1];
+		
 		init();
 
 		BufferedImage img = null;
@@ -68,13 +71,13 @@ public class Main {
 					}
 				}
 				
-				System.out.print("["+colorName+"]");
+				//System.out.print("["+colorName+"]");
 				
 				outImage.getGraphics().drawImage(getGridNumberedImage(index), x*GRID_OUT_SIZE, y*GRID_OUT_SIZE, null);
 				
 				// outImage.setRGB(x, y, pixelInt);
 			}
-			System.out.println();
+			//System.out.println();
 		}
 
 		//outImage.getGraphics().drawImage(gridImg, 0, 0, null);
@@ -88,83 +91,10 @@ public class Main {
 	}
 
 	public static void init() {
-		colors = generateColors();
 		colorList = initColorList();
-		inFile = new File("content/in/" + filename);
-		outFile = new File("content/out/" + filename);
-		gridFile = new File("content/in/grid.png");
-	}
-
-	public static ArrayList<ColorDefinition> generateColors() {
-		ArrayList<ColorDefinition> colors = new ArrayList<ColorDefinition>();
-
-		ColorDefinition blue = new ColorDefinition();
-		blue.setId(0);
-		blue.setName("Blue");
-		blue.setrLow(0);
-		blue.setrHigh(64);
-		blue.setgLow(0);
-		blue.setgHigh(64);
-		blue.setbLow(64);
-		blue.setbHigh(255);
-		colors.add(blue);
-
-		ColorDefinition red = new ColorDefinition();
-		red.setId(1);
-		red.setName("Red");
-		red.setrLow(64);
-		red.setrHigh(255);
-		red.setgLow(0);
-		red.setgHigh(64);
-		red.setbLow(0);
-		red.setbHigh(64);
-		colors.add(red);
-
-		ColorDefinition green = new ColorDefinition();
-		green.setId(2);
-		green.setName("Green");
-		green.setrLow(0);
-		green.setrHigh(64);
-		green.setgLow(64);
-		green.setgHigh(255);
-		green.setbLow(0);
-		green.setbHigh(64);
-		colors.add(green);
-
-		ColorDefinition white = new ColorDefinition();
-		white.setId(3);
-		white.setName("White");
-		white.setrLow(200);
-		white.setrHigh(255);
-		white.setgLow(200);
-		white.setgHigh(255);
-		white.setbLow(200);
-		white.setbHigh(255);
-		colors.add(white);
-
-		ColorDefinition black = new ColorDefinition();
-		black.setId(4);
-		black.setName("Black");
-		black.setrLow(0);
-		black.setrHigh(50);
-		black.setgLow(0);
-		black.setgHigh(50);
-		black.setbLow(0);
-		black.setbHigh(50);
-		colors.add(black);
-
-		ColorDefinition gray = new ColorDefinition();
-		gray.setId(5);
-		gray.setName("Gray");
-		gray.setrLow(20);
-		gray.setrHigh(100);
-		gray.setgLow(20);
-		gray.setgHigh(100);
-		gray.setbLow(20);
-		gray.setbHigh(100);
-		colors.add(gray);
-
-		return colors;
+		inFile = new File(infilename);
+		outFile = new File(outfilename);
+		gridFile = new File("grid.png");
 	}
 
 	private static ArrayList<ColorName> initColorList() {
