@@ -1,4 +1,4 @@
-package com.slyvronline.mysterycolor;
+package com.slyvronline.mysterycolor.objs;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -11,116 +11,203 @@ import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 
-public class Main {
+import com.slyvronline.mysterycolor.ColorName;
+import com.slyvronline.mysterycolor.FastRGB;
 
-	private static ArrayList<ColorName> colorList;
-	private static File inFile;
-	private static File outFile;
-	private static File gridFile;
-	private static String infilename = "birb.png";
-	private static String outfilename = "birb_out.png";
+public class Img {
+
+	private String name;
+	private String filetype;
+	private File inFile;
+	private File outFile;
+	private File recolorFile;
+	private File gridFile;
+	private BufferedImage buffImgIn;
+	private BufferedImage buffImgOut;
+	private BufferedImage buffImgRecolor;
+	private BufferedImage buffImgGrid;
 	
-	private static final int GRID_OUT_SIZE = 32;
+	private ArrayList<ColorName> colorList;
+	private final int GRID_OUT_SIZE = 32;
+	
+	public Img(File inFile, String filetype) {
+		this.name = inFile.getName();
+		this.inFile = inFile;
+		this.filetype = filetype;
+		colorList = initColorList();
+		gridFile = new File("grid.png");
+		outFile = new File("out_"+this.name);
+	}
+	
+	public void convert() {
+		if (buffImgOut == null) {
+			try {
+				buffImgIn = ImageIO.read(inFile);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
+			int w = buffImgIn.getWidth();
+			int h = buffImgIn.getHeight();
+			int gridsize = 1;
+			int expansion = 0;
 
-	public static void main(String[] args) {
+			int grid_w = w / gridsize;
+			int grid_h = h / gridsize;
 
-		infilename = args[0];
-		outfilename = args[1];
-		
-		init();
+			// System.out.println(grid_w+" "+grid_h);
 
-		BufferedImage img = null;
-		try {
-			img = ImageIO.read(inFile);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-		int w = img.getWidth();
-		int h = img.getHeight();
-		int gridsize = 1;
-		int expansion = 0;
+			FastRGB rgb = new FastRGB(buffImgIn);
 
-		int grid_w = w / gridsize;
-		int grid_h = h / gridsize;
+			int colorNameTableWidth = 6;
+			buffImgOut = new BufferedImage(grid_w*GRID_OUT_SIZE + (10+GRID_OUT_SIZE*colorNameTableWidth), grid_h*GRID_OUT_SIZE, BufferedImage.TYPE_INT_RGB);
 
-		// System.out.println(grid_w+" "+grid_h);
+			buffImgRecolor = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
+			
+			for (int y = 0; y < grid_h; y++) {
+				for (int x = 0; x < grid_w; x++) {
+					int pixelInt = rgb.getRGBInteger((x + expansion) * gridsize, (y + expansion) * gridsize);
+					short[] pixelArr = rgb.getRGB((x + expansion) * gridsize, (y + expansion) * gridsize);
+					short red = pixelArr[0];
+					short green = pixelArr[1];
+					short blue = pixelArr[2];
+					short alpha = pixelArr[3];
 
-		FastRGB rgb = new FastRGB(img);
-
-		int colorNameTableWidth = 6;
-		BufferedImage outImage = new BufferedImage(grid_w*GRID_OUT_SIZE + (10+GRID_OUT_SIZE*colorNameTableWidth), grid_h*GRID_OUT_SIZE, BufferedImage.TYPE_INT_RGB);
-
-		BufferedImage inImageRecolor = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
-		
-		for (int y = 0; y < grid_h; y++) {
-			for (int x = 0; x < grid_w; x++) {
-				int pixelInt = rgb.getRGBInteger((x + expansion) * gridsize, (y + expansion) * gridsize);
-				short[] pixelArr = rgb.getRGB((x + expansion) * gridsize, (y + expansion) * gridsize);
-				short red = pixelArr[0];
-				short green = pixelArr[1];
-				short blue = pixelArr[2];
-				short alpha = pixelArr[3];
-
-				//System.out.print("[" + red + "-" + green + "-" + blue + "]");
-				
-				ColorName colorName = getColorNameFromRgb(red, green, blue);
-				int index=-1;
-				
-				for(int i=0; i<colorList.size(); i++) {
-					if (colorList.get(i).getName().equals(colorName.getName())) {
-						index = i;
-						break;
+					//System.out.print("[" + red + "-" + green + "-" + blue + "]");
+					
+					ColorName colorName = getColorNameFromRgb(red, green, blue);
+					int index=-1;
+					
+					for(int i=0; i<colorList.size(); i++) {
+						if (colorList.get(i).getName().equals(colorName.getName())) {
+							index = i;
+							break;
+						}
 					}
+					
+					buffImgOut.getGraphics().drawImage(getGridNumberedImage(index), x*GRID_OUT_SIZE, y*GRID_OUT_SIZE, null);
+					
+					buffImgRecolor.setRGB(x,y,colorName.getColor().getRGB());
+					
+					// outImage.setRGB(x, y, pixelInt);
 				}
-				
-				outImage.getGraphics().drawImage(getGridNumberedImage(index), x*GRID_OUT_SIZE, y*GRID_OUT_SIZE, null);
-				
-				inImageRecolor.setRGB(x,y,colorName.getColor().getRGB());
-				
-				// outImage.setRGB(x, y, pixelInt);
+			}
+			
+			buffImgOut.getGraphics().drawImage(getColorNameTable(GRID_OUT_SIZE*colorNameTableWidth, grid_h*GRID_OUT_SIZE), grid_w*GRID_OUT_SIZE, 0, null);
+			
+			//Output out image
+			try {
+				ImageIO.write(buffImgOut, "png", outFile);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
+			//Output recolor image
+			try {
+				ImageIO.write(buffImgRecolor, "png", new File(inFile.getName().replace("."+filetype,"_recolor."+filetype)));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
+			
+			//Output a color grid of all colors
+			BufferedImage colorgrid = new BufferedImage(colorList.size(), 1, BufferedImage.TYPE_INT_RGB);
+			for(int i=0; i<colorList.size(); i++) {
+				ColorName color = colorList.get(i);
+				colorgrid.setRGB(i,0,color.getColor().getRGB());
+			}
+			
+			try {
+				ImageIO.write(colorgrid, "png", new File("colorgrid.png"));
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
 		}
-		
-		outImage.getGraphics().drawImage(getColorNameTable(GRID_OUT_SIZE*colorNameTableWidth, grid_h*GRID_OUT_SIZE), grid_w*GRID_OUT_SIZE, 0, null);
-		
-		//Output out image
-		try {
-			ImageIO.write(outImage, "png", outFile);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-		//Output recolor image
-		try {
-			ImageIO.write(inImageRecolor, "png", new File(infilename.replace(".png","_recolor.png")));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-		
-		//Output a color grid of all colors
-		BufferedImage colorgrid = new BufferedImage(colorList.size(), 1, BufferedImage.TYPE_INT_RGB);
-		for(int i=0; i<colorList.size(); i++) {
-			ColorName color = colorList.get(i);
-			colorgrid.setRGB(i,0,color.getColor().getRGB());
-		}
-		
-		try {
-			ImageIO.write(colorgrid, "png", new File("colorgrid.png"));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 	}
 
-	public static void init() {
-		colorList = initColorList();
-		inFile = new File(infilename);
-		outFile = new File(outfilename);
-		gridFile = new File("grid.png");
-	}
+	public ColorName getColorNameFromRgb(int r, int g, int b) {
+        ColorName closestMatch = null;
+        int minMSE = Integer.MAX_VALUE;
+        int mse;
+        for (ColorName c : colorList) {
+            mse = c.computeMSE(r, g, b);
+            if (mse < minMSE) {
+                minMSE = mse;
+                closestMatch = c;
+            }
+        }
 
-	private static ArrayList<ColorName> initColorList() {
+        if (closestMatch != null) {
+            return closestMatch;
+        } else {
+            return null;
+        }
+    }
+    
+    private BufferedImage getGridNumberedImage(int number) {
+		BufferedImage gridImg = null;
+		try {
+			gridImg = ImageIO.read(gridFile);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+    	
+        int w = gridImg.getWidth();
+        int h = gridImg.getHeight();
+        BufferedImage img = new BufferedImage(
+            w, h, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2d = img.createGraphics();
+        g2d.drawImage(gridImg, 0, 0, w, h, null);
+        g2d.setPaint(Color.LIGHT_GRAY);
+        g2d.setFont(new Font("Courier", Font.BOLD, 20));
+        String s = ""+number;
+        if (number == 0) s = "";
+        FontMetrics fm = g2d.getFontMetrics();
+        int x = img.getWidth() - fm.stringWidth(s) - 5;
+        int y = fm.getHeight();
+        g2d.drawString(s, x, y);
+        g2d.dispose();
+        
+        return img;
+    }
+    
+    private BufferedImage getColorNameTable(int width, int height) {
+    	BufferedImage gridImg = null;
+		try {
+			gridImg = ImageIO.read(gridFile);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+    	
+        int w = width;
+        int h = height;
+        BufferedImage img = new BufferedImage(
+            w, h, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2d = img.createGraphics();
+        g2d.drawImage(gridImg, 0, 0, w, h, null);
+        g2d.setPaint(Color.black);
+        g2d.setFont(new Font("Courier", Font.BOLD, 16));
+        String s = "";
+        FontMetrics fm = g2d.getFontMetrics();
+        
+        for(int index=0; index<colorList.size(); index++) {
+        	ColorName c = colorList.get(index);
+        	s = index+" - "+c.getName();
+        	//int x = img.getWidth() - fm.stringWidth(s) - 5;
+            int x = 12;
+        	int y = fm.getHeight()+GRID_OUT_SIZE;
+        	
+        	g2d.setPaint(new Color(c.getR(), c.getG(), c.getB()));
+        	
+        	g2d.drawString(s, x, y + (index*(GRID_OUT_SIZE/2)));
+        }
+        
+       
+        g2d.dispose();
+        return img;
+    }
+	
+	private ArrayList<ColorName> initColorList() {
 		ArrayList<ColorName> colorList = new ArrayList<ColorName>();
 //		colorList.add(new ColorName("AliceBlue", 0xF0, 0xF8, 0xFF));
 //		colorList.add(new ColorName("AntiqueWhite", 0xFA, 0xEB, 0xD7));
@@ -314,86 +401,98 @@ public class Main {
 		
 		return colorList;
 	}
-	
-    public static ColorName getColorNameFromRgb(int r, int g, int b) {
-        ColorName closestMatch = null;
-        int minMSE = Integer.MAX_VALUE;
-        int mse;
-        for (ColorName c : colorList) {
-            mse = c.computeMSE(r, g, b);
-            if (mse < minMSE) {
-                minMSE = mse;
-                closestMatch = c;
-            }
-        }
 
-        if (closestMatch != null) {
-            return closestMatch;
-        } else {
-            return null;
-        }
-    }
-    
-    private static BufferedImage getGridNumberedImage(int number) {
-		BufferedImage gridImg = null;
-		try {
-			gridImg = ImageIO.read(gridFile);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-    	
-        int w = gridImg.getWidth();
-        int h = gridImg.getHeight();
-        BufferedImage img = new BufferedImage(
-            w, h, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g2d = img.createGraphics();
-        g2d.drawImage(gridImg, 0, 0, w, h, null);
-        g2d.setPaint(Color.LIGHT_GRAY);
-        g2d.setFont(new Font("Courier", Font.BOLD, 20));
-        String s = ""+number;
-        if (number == 0) s = "";
-        FontMetrics fm = g2d.getFontMetrics();
-        int x = img.getWidth() - fm.stringWidth(s) - 5;
-        int y = fm.getHeight();
-        g2d.drawString(s, x, y);
-        g2d.dispose();
-        
-        return img;
-    }
-    
-    private static BufferedImage getColorNameTable(int width, int height) {
-    	BufferedImage gridImg = null;
-		try {
-			gridImg = ImageIO.read(gridFile);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-    	
-        int w = width;
-        int h = height;
-        BufferedImage img = new BufferedImage(
-            w, h, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g2d = img.createGraphics();
-        g2d.drawImage(gridImg, 0, 0, w, h, null);
-        g2d.setPaint(Color.black);
-        g2d.setFont(new Font("Courier", Font.BOLD, 16));
-        String s = "";
-        FontMetrics fm = g2d.getFontMetrics();
-        
-        for(int index=0; index<colorList.size(); index++) {
-        	ColorName c = colorList.get(index);
-        	s = index+" - "+c.getName();
-        	//int x = img.getWidth() - fm.stringWidth(s) - 5;
-            int x = 12;
-        	int y = fm.getHeight()+GRID_OUT_SIZE;
-        	
-        	g2d.setPaint(new Color(c.getR(), c.getG(), c.getB()));
-        	
-        	g2d.drawString(s, x, y + (index*(GRID_OUT_SIZE/2)));
-        }
-        
-       
-        g2d.dispose();
-        return img;
-    }
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getFiletype() {
+		return filetype;
+	}
+
+	public void setFiletype(String filetype) {
+		this.filetype = filetype;
+	}
+
+	public File getInFile() {
+		return inFile;
+	}
+
+	public void setInFile(File inFile) {
+		this.inFile = inFile;
+	}
+
+	public File getOutFile() {
+		return outFile;
+	}
+
+	public void setOutFile(File outFile) {
+		this.outFile = outFile;
+	}
+
+	public File getRecolorFile() {
+		return recolorFile;
+	}
+
+	public void setRecolorFile(File recolorFile) {
+		this.recolorFile = recolorFile;
+	}
+
+	public File getGridFile() {
+		return gridFile;
+	}
+
+	public void setGridFile(File gridFile) {
+		this.gridFile = gridFile;
+	}
+
+	public BufferedImage getBuffImgIn() {
+		return buffImgIn;
+	}
+
+	public void setBuffImgIn(BufferedImage buffImgIn) {
+		this.buffImgIn = buffImgIn;
+	}
+
+	public BufferedImage getBuffImgOut() {
+		return buffImgOut;
+	}
+
+	public void setBuffImgOut(BufferedImage buffImgOut) {
+		this.buffImgOut = buffImgOut;
+	}
+
+	public BufferedImage getBuffImgRecolor() {
+		return buffImgRecolor;
+	}
+
+	public void setBuffImgRecolor(BufferedImage buffImgRecolor) {
+		this.buffImgRecolor = buffImgRecolor;
+	}
+
+	public BufferedImage getBuffImgGrid() {
+		return buffImgGrid;
+	}
+
+	public void setBuffImgGrid(BufferedImage buffImgGrid) {
+		this.buffImgGrid = buffImgGrid;
+	}
+
+	public ArrayList<ColorName> getColorList() {
+		return colorList;
+	}
+
+	public void setColorList(ArrayList<ColorName> colorList) {
+		this.colorList = colorList;
+	}
+
+	public int getGRID_OUT_SIZE() {
+		return GRID_OUT_SIZE;
+	}
+	
+	
 }

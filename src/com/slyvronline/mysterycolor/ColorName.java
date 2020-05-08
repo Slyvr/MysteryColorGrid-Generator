@@ -1,14 +1,18 @@
 package com.slyvronline.mysterycolor;
 
+import java.awt.Color;
+
 public class ColorName {
 	public int r, g, b;
 	public String name;
+	public Color color;
 
 	public ColorName(String name, int r, int g, int b) {
 		this.r = r;
 		this.g = g;
 		this.b = b;
 		this.name = name;
+		this.color = new Color(r,g,b);
 	}
 
 	public int computeMSE(int pixR, int pixG, int pixB) {
@@ -29,5 +33,9 @@ public class ColorName {
 
 	public String getName() {
 		return name;
+	}
+	
+	public Color getColor() {
+		return color;
 	}
 }

@@ -11,7 +11,7 @@ public class FastRGB {
 	private int pixelLength;
 	private byte[] pixels;
 
-	FastRGB(BufferedImage image) {
+	public FastRGB(BufferedImage image) {
 
 		pixels = ((DataBufferByte) image.getRaster().getDataBuffer()).getData();
 		width = image.getWidth();
